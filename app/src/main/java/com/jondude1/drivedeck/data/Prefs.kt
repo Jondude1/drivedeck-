@@ -42,20 +42,20 @@ class Prefs(context: Context) {
     fun canPinMore(): Boolean = pinned.size < MAX_PINNED
 
     fun pin(key: String) {
-        if (key !in pinned && canPinMore()) setPinned(pinned + key)
+        if (key !in pinned && canPinMore()) writePinned(pinned + key)
     }
 
     fun unpin(key: String) {
-        setPinned(pinned - key)
+        writePinned(pinned - key)
     }
 
     fun hide(key: String) {
         unpin(key)
-        setHidden(hidden + key)
+        writeHidden(hidden + key)
     }
 
     fun unhide(key: String) {
-        setHidden(hidden - key)
+        writeHidden(hidden - key)
     }
 
     fun updateExtraLarge(value: Boolean) {
@@ -79,16 +79,16 @@ class Prefs(context: Context) {
         val picks = DEFAULT_PACKAGES
             .mapNotNull { pkg -> installed.firstOrNull { it.packageName == pkg }?.key }
             .take(6)
-        setPinned(picks)
+        writePinned(picks)
         sp.edit().putBoolean(KEY_PINNED_INIT, true).apply()
     }
 
-    private fun setPinned(list: List<String>) {
+    private fun writePinned(list: List<String>) {
         pinned = list
         sp.edit().putString(KEY_PINNED, list.joinToString("\n")).apply()
     }
 
-    private fun setHidden(set: Set<String>) {
+    private fun writeHidden(set: Set<String>) {
         hidden = set
         sp.edit().putStringSet(KEY_HIDDEN, HashSet(set)).apply()
     }
